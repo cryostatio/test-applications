@@ -17,7 +17,7 @@ podman manifest create "${BUILD_IMG}:${BUILD_TAG}"
 
 for arch in amd64 arm64; do
     echo "Building for ${arch} ..."
-    podman build -t "${BUILD_IMG}:linux-${arch}" -f "${DIR}/Containerfile" "${DIR}"
+    podman build --platform="linux/${arch}" -t "${BUILD_IMG}:linux-${arch}" -f "${DIR}/Containerfile" "${DIR}"
     podman manifest add "${BUILD_IMG}:${BUILD_TAG}" containers-storage:"${BUILD_IMG}:linux-${arch}"
 done
 
