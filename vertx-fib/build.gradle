@@ -1,0 +1,68 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.google.cloud.tools.jib' version '3.4.2'
+    id 'com.ryandens.javaagent-jib' version '0.5.1'
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.vertx:vertx-web:4.5.8'
+    javaagent 'io.cryostat:cryostat-agent:0.4.0:shaded'
+}
+
+task printVersion {
+  doLast {
+    println(project.findProperty('version'))
+  }
+}
+
+mainClassName = 'es.andrewazor.demo.Main'
+
+def baseImage = 'registry.access.redhat.com/ubi8/openjdk-17';
+def baseImageTag = 'latest';
+
+def buildArch = System.getenv('JIB_ARCH') ?: 'amd64'
+def buildOs = 'linux'
+
+jib {
+    from {
+        image = baseImage + ':' + baseImageTag
+        platforms {
+            platform {
+                architecture = buildArch
+                os = buildOs
+            }
+        }
+    }
+    to {
+        image = "quay.io/redhat-java-monitoring/vertx-cryostat-agent"
+        tags = [buildOs + '-' + buildArch]
+    }
+    dockerClient {
+        executable = '/usr/bin/podman'
+    }
+    container {
+        mainClass = mainClassName
+        creationTime = 'USE_CURRENT_TIMESTAMP'
+        entrypoint = '/app/entrypoint.sh'
+        ports = [
+        '8080',
+        '9093',
+        ]
+    }
+    extraDirectories {
+        paths = 'src/main/extras'
+        permissions = [
+            '/app/entrypoint.sh': '755',
+            '/app/resources/jmxremote.password.in': '440',
+            '/app/resources/jmxremote.access.in': '440',
+        ]
+    }
+}
+
+applicationDefaultJvmArgs = jib.container.jvmFlags

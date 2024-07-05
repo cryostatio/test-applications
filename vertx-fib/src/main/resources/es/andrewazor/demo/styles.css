@@ -1,0 +1,11 @@
+table {
+  width: 40%;
+}
+
+th, td {
+  border-bottom: 1px solid #ddd;
+}
+
+th {
+  text-align: left;
+}
