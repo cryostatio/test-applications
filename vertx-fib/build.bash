@@ -15,7 +15,9 @@ for arch in amd64 arm64; do
     podman manifest add "${BUILD_IMG}:${BUILD_TAG}" containers-storage:"${BUILD_IMG}:linux-${arch}"
 done
 
-podman tag "${BUILD_IMG}:${BUILD_TAG}" "${BUILD_IMG}:latest"
+for tag in ${TAGS}; do
+    podman tag "${BUILD_IMG}:${BUILD_TAG}" "${BUILD_IMG}:${tag}"
+done
 
 if [ "${PUSH_MANIFEST}" = "true" ]; then
     podman manifest push "${BUILD_IMG}:${BUILD_TAG}"
