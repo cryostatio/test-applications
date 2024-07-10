@@ -11,7 +11,7 @@ function cleanup() {
 trap cleanup EXIT
 
 BUILD_IMG="${APP_REGISTRY:-quay.io}/${APP_NAMESPACE:-redhat-java-monitoring}/${APP_NAME:-quarkus-cryostat-agent}"
-BUILD_TAG="${APP_VERSION:-$(mvn -f "${DIR}/pom.xml" help:evaluate -o -B -q -DforceStdout -Dexpression=project.version)}"
+BUILD_TAG="${APP_VERSION:-$(mvn -f "${DIR}/pom.xml" help:evaluate -B -q -DforceStdout -Dexpression=project.version)}"
 
 "${DIR}/mvnw" -DskipTests clean package
 
