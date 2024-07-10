@@ -16,3 +16,7 @@ for arch in amd64 arm64; do
 done
 
 podman tag "${BUILD_IMG}:${BUILD_TAG}" "${BUILD_IMG}:latest"
+
+if [ "${PUSH_MANIFEST}" = "true" ]; then
+    podman manifest push "${BUILD_IMG}:${BUILD_TAG}"
+fi
