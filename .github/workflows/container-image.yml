@@ -32,6 +32,7 @@ jobs:
     - uses: actions/checkout@v4
       with:
         repository: ${{ github.repository_owner }}/cryostat-agent
+        path: cryostat-agent
         ref: main
         submodules: true
         fetch-depth: 0
@@ -65,7 +66,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         repository: ${{ github.repository_owner }}/cryostat-agent
-        path: cryostat-agent
+        path: ../cryostat-agent
         ref: main
         submodules: true
         fetch-depth: 0
@@ -73,7 +74,7 @@ jobs:
       uses: actions/cache@v4
       with:
         path: ~/.m2
-        key: ${{ runner.os }}-build-${{ hashFiles('cryostat-agent/pom.xml') }}
+        key: ${{ runner.os }}-build-${{ hashFiles('../cryostat-agent/pom.xml') }}
         restore-keys: |
           ${{ runner.os }}-build-
           ${{ runner.os }}-
