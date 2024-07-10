@@ -38,6 +38,11 @@ jobs:
     - id: get-agent-version
       run: |
         echo "agent-version=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)" >> $GITHUB_OUTPUT
+    - run: mvn -B -U clean install
+    - uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}
 
   build-and-push:
     needs: [get-agent-version]
