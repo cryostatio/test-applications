@@ -58,12 +58,14 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
+        path: test-applications
         submodules: true
         fetch-depth: 0
     - name: Checkout Agent
       uses: actions/checkout@v4
       with:
         repository: ${{ github.repository_owner }}/cryostat-agent
+        path: cryostat-agent
         ref: main
         submodules: true
         fetch-depth: 0
@@ -88,7 +90,7 @@ jobs:
     - name: Registry login
       run: podman login quay.io --username=${{ env.CI_USER }} --password=${{ secrets.REPOSITORY_TOKEN }}
     - name: Build application
-      run: ./build.bash
+      run: bash ./test-applications/build.bash
       env:
         TAGS: ${{ env.agent-version }} ${{env.DATE_TAG}} latest
         PUSH_MANIFEST: true
