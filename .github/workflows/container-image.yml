@@ -86,6 +86,7 @@ jobs:
         PUSH_MANIFEST: true
         APP_REGISTRY: ${{ env.CI_REGISTRY }}
         APP_NAMESPACE: ${{ env.CI_NAMESPACE }}
+        BUILD_TAG: ${{ env.agent-version }}
     - uses: actions/cache@v4
       with:
         path: ~/.m2
