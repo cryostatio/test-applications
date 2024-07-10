@@ -7,5 +7,5 @@ for p in */; do
         echo "No build.bash in ${p} !"
         exit 1
     fi
-    bash "${p}/build.bash"
+    PUSH_MANIFEST="${PUSH_MANIFEST:-false}" bash "${p}/build.bash"
 done
