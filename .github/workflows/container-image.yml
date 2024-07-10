@@ -60,7 +60,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        path: test-applications
         submodules: true
         fetch-depth: 0
     - name: Restore Maven Cache
@@ -84,7 +83,7 @@ jobs:
     - name: Registry login
       run: podman login quay.io --username=${{ env.CI_USER }} --password=${{ secrets.REPOSITORY_TOKEN }}
     - name: Build application
-      run: bash ./test-applications/build.bash
+      run: ./build.bash
       env:
         TAGS: ${{ env.agent-version }} ${{env.DATE_TAG}} latest
         PUSH_MANIFEST: true
