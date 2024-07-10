@@ -28,5 +28,5 @@ for tag in ${TAGS}; do
 done
 
 if [ "${PUSH_MANIFEST}" = "true" ]; then
-    podman manifest push "${BUILD_IMG}:${BUILD_TAG}"
+    podman manifest push "${BUILD_IMG}:${BUILD_TAG}" "docker://${BUILD_IMG}:${BUILD_TAG}"
 fi
