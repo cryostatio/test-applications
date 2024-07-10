@@ -31,6 +31,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
+        repository: ${{ github.repository_owner }}/cryostat-agent
+        ref: main
         submodules: true
         fetch-depth: 0
     - id: get-agent-version
