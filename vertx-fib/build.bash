@@ -4,6 +4,8 @@ set -xe
 
 DIR="$(dirname "$(readlink -f "$0")")"
 
+sh "${DIR}/gradlew" -p "${DIR}" compileJava > /dev/null 2>&1 # initialize gradle plugins etc. before trying to parse project version
+
 BUILD_IMG="${APP_REGISTRY:-quay.io}/${APP_NAMESPACE:-redhat-java-monitoring}/${APP_NAME:-vertx-cryostat-agent}"
 BUILD_TAG="${APP_VERSION:-$(sh "${DIR}/gradlew" -p "${DIR}" -q printVersion)}"
 
