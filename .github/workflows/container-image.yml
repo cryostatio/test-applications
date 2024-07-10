@@ -90,3 +90,4 @@ jobs:
         APP_REGISTRY: ${{ env.CI_REGISTRY }}
         APP_NAMESPACE: ${{ env.CI_NAMESPACE }}
         BUILD_TAG: ${{ env.agent-version }}
+        CRYOSTAT_AGENT_VERSION: ${{ env.agent-version }}

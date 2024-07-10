@@ -6,14 +6,19 @@ DIR="$(dirname "$(readlink -f "$0")")"
 
 pushd "${DIR}"
 function cleanup() {
+    rm -rf "${DIR}/cache"
     popd
 }
 trap cleanup EXIT
 
 BUILD_IMG="${APP_REGISTRY:-quay.io}/${APP_NAMESPACE:-redhat-java-monitoring}/${APP_NAME:-gameserver-cryostat-agent}"
 BUILD_TAG="${APP_VERSION:-latest}"
+CRYOSTAT_AGENT_VERSION="${CRYOSTAT_AGENT_VERSION:-0.5.0-SNAPSHOT}"
 
 podman manifest create "${BUILD_IMG}:${BUILD_TAG}"
+
+mvn dependency:get -Dartifact="io.cryostat:cryostat-agent:${CRYOSTAT_AGENT_VERSION}:jar:shaded"
+mvn dependency:copy -Dartifact="io.cryostat:cryostat-agent:${CRYOSTAT_AGENT_VERSION}:jar:shaded" -DoutputDirectory="${DIR}/cache"
 
 for arch in amd64 arm64; do
     echo "Building for ${arch} ..."
