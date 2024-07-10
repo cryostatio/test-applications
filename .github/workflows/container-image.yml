@@ -60,6 +60,22 @@ jobs:
       with:
         submodules: true
         fetch-depth: 0
+    - name: Checkout Agent
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.repository_owner }}/cryostat-agent
+        path: cryostat-agent
+        ref: main
+        submodules: true
+        fetch-depth: 0
+    - name: Restore Maven Cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ runner.os }}-build-${{ hashFiles('cryostat-agent/pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
     - name: Install qemu
       run: |
         sudo apt-get update
@@ -68,13 +84,6 @@ jobs:
       with:
         java-version: ${{ matrix.java }}
         distribution: 'temurin'
-    - uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
     - name: Get date tag
       run: echo "DATE_TAG=$(date -uI)" >> "$GITHUB_ENV"
     - name: Registry login
@@ -90,4 +99,4 @@ jobs:
     - uses: actions/cache@v4
       with:
         path: ~/.m2
-        key: ${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}
+        key: ${{ runner.os }}-build-${{ hashFiles('cryostat-agent/pom.xml') }}
