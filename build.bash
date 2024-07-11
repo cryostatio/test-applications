@@ -7,5 +7,5 @@ for p in */; do
         echo "No build.bash in ${p} !"
         exit 1
     fi
-    PUSH_MANIFEST="${PUSH_MANIFEST:-false}" TAGS="${TAGS:-latest}" bash "${p}/build.bash"
+    PUSH_MANIFEST="${PUSH_MANIFEST:-false}" TAGS="$(echo "${TAGS:-latest}" | tr '[:upper:]' '[:lower:]')" bash "${p}/build.bash"
 done
