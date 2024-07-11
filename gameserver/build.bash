@@ -6,14 +6,19 @@ DIR="$(dirname "$(readlink -f "$0")")"
 
 pushd "${DIR}"
 function cleanup() {
+    rm -rf "${DIR}/cache"
     popd
 }
 trap cleanup EXIT
 
 BUILD_IMG="${APP_REGISTRY:-quay.io}/${APP_NAMESPACE:-redhat-java-monitoring}/${APP_NAME:-gameserver-cryostat-agent}"
 BUILD_TAG="${APP_VERSION:-latest}"
+CRYOSTAT_AGENT_VERSION="${CRYOSTAT_AGENT_VERSION:-0.5.0-SNAPSHOT}"
 
 podman manifest create "${BUILD_IMG}:${BUILD_TAG}"
+
+mvn dependency:get -Dartifact="io.cryostat:cryostat-agent:${CRYOSTAT_AGENT_VERSION}:jar:shaded"
+mvn dependency:copy -Dartifact="io.cryostat:cryostat-agent:${CRYOSTAT_AGENT_VERSION}:jar:shaded" -DoutputDirectory="${DIR}/cache"
 
 for arch in amd64 arm64; do
     echo "Building for ${arch} ..."
@@ -21,4 +26,12 @@ for arch in amd64 arm64; do
     podman manifest add "${BUILD_IMG}:${BUILD_TAG}" containers-storage:"${BUILD_IMG}:linux-${arch}"
 done
 
-podman tag "${BUILD_IMG}:${BUILD_TAG}" "${BUILD_IMG}:latest"
+for tag in ${TAGS}; do
+    podman tag "${BUILD_IMG}:${BUILD_TAG}" "${BUILD_IMG}:${tag}"
+done
+
+if [ "${PUSH_MANIFEST}" = "true" ]; then
+    for tag in ${TAGS}; do
+        podman manifest push "${BUILD_IMG}:${tag}" "docker://${BUILD_IMG}:${tag}"
+    done
+fi

@@ -29,6 +29,10 @@ def baseImageTag = 'latest';
 def buildArch = System.getenv('JIB_ARCH') ?: 'amd64'
 def buildOs = 'linux'
 
+def appRegistry = System.getenv('APP_REGISTRY') ?: 'quay.io'
+def appNamespace = System.getenv('APP_NAMESPACE') ?: 'redhat-java-monitoring'
+def appName = System.getenv('APP_NAME') ?: 'vertx-cryostat-agent'
+
 jib {
     from {
         image = baseImage + ':' + baseImageTag
@@ -40,7 +44,7 @@ jib {
         }
     }
     to {
-        image = "quay.io/redhat-java-monitoring/vertx-cryostat-agent"
+        image = appRegistry + '/' + appNamespace + '/' + appName
         tags = [buildOs + '-' + buildArch]
     }
     dockerClient {

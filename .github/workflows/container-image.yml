@@ -1,0 +1,93 @@
+name: Build Container Image
+
+concurrency:
+  group: ci-${{ github.run_id }}
+  cancel-in-progress: true
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 1' # every Monday at midnight
+  push:
+    branches:
+      - main
+      - v[0-9]+
+      - v[0-9]+.[0-9]+
+      - cryostat-v[0-9]+.[0-9]+
+
+env:
+  OPENSUSE_UNOFFICIAL_LIBCONTAINERS_KEY_URL: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_22.04/Release.key"
+  OPENSUSE_UNOFFICIAL_LIBCONTAINERS_SOURCE_URL: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_22.04"
+  CI_USER: redhat-java-monitoring+github_ci
+  CI_REGISTRY: quay.io
+  CI_NAMESPACE: redhat-java-monitoring
+
+jobs:
+  get-agent-version:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'cryostatio' }}
+    outputs: 
+      image-version: ${{ steps.get-agent-version.outputs.agent-version }}
+      hash-key: ${{ steps.get-hash-key.outputs.hash-key }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: ${{ github.repository_owner }}/cryostat-agent
+        ref: ${{ github.ref }}
+        submodules: true
+        fetch-depth: 0
+    - id: get-agent-version
+      run: |
+        echo "agent-version=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)" >> $GITHUB_OUTPUT
+    - id: get-hash-key
+      run: |
+        echo "hash-key=${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}" >> $GITHUB_OUTPUT
+    - run: mvn -B -U clean install
+    - uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ steps.get-hash-key.outputs.hash-key }}
+
+  build-and-push:
+    needs: [get-agent-version]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: ['17']
+    env:
+      agent-version: ${{ needs.get-agent-version.outputs.image-version }}
+    name: Build Java ${{ matrix.java }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+    - name: Restore Maven Cache
+      uses: actions/cache@v4
+      with:
+        path: ~/.m2
+        key: ${{ needs.get-agent-version.outputs.hash-key }}
+        restore-keys: |
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+    - name: Install qemu
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y qemu-user-static
+    - uses: actions/setup-java@v4
+      with:
+        java-version: ${{ matrix.java }}
+        distribution: 'temurin'
+    - name: Get date tag
+      run: echo "DATE_TAG=$(date -uI)" >> "$GITHUB_ENV"
+    - name: Registry login
+      run: podman login quay.io --username=${{ env.CI_USER }} --password=${{ secrets.REPOSITORY_TOKEN }}
+    - name: Build application
+      run: ./build.bash
+      env:
+        TAGS: ${{ env.agent-version }} ${{env.DATE_TAG}} latest
+        PUSH_MANIFEST: true
+        APP_REGISTRY: ${{ env.CI_REGISTRY }}
+        APP_NAMESPACE: ${{ env.CI_NAMESPACE }}
+        BUILD_TAG: ${{ env.agent-version }}
+        CRYOSTAT_AGENT_VERSION: ${{ env.agent-version }}
