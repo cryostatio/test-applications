@@ -38,7 +38,7 @@ jobs:
         fetch-depth: 0
     - id: get-agent-version
       run: |
-        echo "agent-version=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version | tr '[:upper:]' '[:lower:]')" >> $GITHUB_OUTPUT
+        echo "agent-version=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)" >> $GITHUB_OUTPUT
     - id: get-hash-key
       run: |
         echo "hash-key=${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}" >> $GITHUB_OUTPUT
