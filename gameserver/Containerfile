@@ -1,4 +1,4 @@
-ARG server_img=docker.io/itzg/minecraft-server:java21-jdk
+ARG server_img=docker.io/itzg/minecraft-server:java21
 ARG agent_version
 
 FROM quay.io/cryostat/cryostat-agent-init:${agent_version} AS agent
