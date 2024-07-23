@@ -17,12 +17,9 @@ CRYOSTAT_AGENT_VERSION="${CRYOSTAT_AGENT_VERSION:-0.5.0-SNAPSHOT}"
 
 podman manifest create "${BUILD_IMG}:${BUILD_TAG}"
 
-mvn dependency:get -Dartifact="io.cryostat:cryostat-agent:${CRYOSTAT_AGENT_VERSION}:jar:shaded"
-mvn dependency:copy -Dartifact="io.cryostat:cryostat-agent:${CRYOSTAT_AGENT_VERSION}:jar:shaded" -DoutputDirectory="${DIR}/cache"
-
 for arch in amd64 arm64; do
     echo "Building for ${arch} ..."
-    podman build --platform="linux/${arch}" -t "${BUILD_IMG}:linux-${arch}" -f "${DIR}/Containerfile" "${DIR}"
+    podman build --build-arg agent_version="${CRYOSTAT_AGENT_VERSION,,}" --platform="linux/${arch}" -t "${BUILD_IMG}:linux-${arch}" -f "${DIR}/Containerfile" "${DIR}"
     podman manifest add "${BUILD_IMG}:${BUILD_TAG}" containers-storage:"${BUILD_IMG}:linux-${arch}"
 done
 
