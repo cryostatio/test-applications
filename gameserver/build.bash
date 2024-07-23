@@ -24,7 +24,7 @@ done
 for arch in "${ARCHS[@]}"; do
   for jdk in "${JDKS[@]}"; do
     echo "Building JDK ${jdk} for ${arch} ..."
-    podman build --build-arg server_img="docker.io/itzg/minecraft-server:java${jdk}" --build-arg agent_version="${CRYOSTAT_AGENT_VERSION,,}" --platform="linux/${arch}" -t "${BUILD_IMG}:linux-${arch}-jdk${jdk}" -f "${DIR}/Containerfile" "${DIR}"
+    podman build --build-arg server_img="docker.io/itzg/minecraft-server:java${jdk}-jdk" --build-arg agent_version="${CRYOSTAT_AGENT_VERSION,,}" --platform="linux/${arch}" -t "${BUILD_IMG}:linux-${arch}-jdk${jdk}" -f "${DIR}/Containerfile" "${DIR}"
     podman manifest add "${BUILD_IMG}:${BUILD_TAG}-jdk${jdk}" containers-storage:"${BUILD_IMG}:linux-${arch}-jdk${jdk}"
   done
 done
