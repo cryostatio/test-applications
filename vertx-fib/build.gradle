@@ -12,7 +12,7 @@ repositories {
 
 dependencies {
     implementation 'io.vertx:vertx-web:4.5.8'
-    javaagent 'io.cryostat:cryostat-agent:0.5.0-SNAPSHOT:shaded'
+    javaagent "io.cryostat:cryostat-agent:${System.getenv('CRYOSTAT_AGENT_VERSION')}:shaded"
 }
 
 task printVersion {
