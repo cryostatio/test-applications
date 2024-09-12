@@ -28,7 +28,6 @@ jobs:
     if: ${{ github.repository_owner == 'cryostatio' }}
     outputs: 
       image-version: ${{ steps.get-agent-version.outputs.agent-version }}
-      hash-key: ${{ steps.get-hash-key.outputs.hash-key }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -39,14 +38,6 @@ jobs:
     - id: get-agent-version
       run: |
         echo "agent-version=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)" >> $GITHUB_OUTPUT
-    - id: get-hash-key
-      run: |
-        echo "hash-key=${{ runner.os }}-build-${{ hashFiles('**/pom.xml') }}" >> $GITHUB_OUTPUT
-    - run: mvn -B -U clean install
-    - uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ steps.get-hash-key.outputs.hash-key }}
 
   build-and-push:
     needs: [get-agent-version]
@@ -62,14 +53,6 @@ jobs:
       with:
         submodules: true
         fetch-depth: 0
-    - name: Restore Maven Cache
-      uses: actions/cache@v4
-      with:
-        path: ~/.m2
-        key: ${{ needs.get-agent-version.outputs.hash-key }}
-        restore-keys: |
-          ${{ runner.os }}-build-
-          ${{ runner.os }}-
     - name: Install qemu
       run: |
         sudo apt-get update
