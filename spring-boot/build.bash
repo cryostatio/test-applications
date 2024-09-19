@@ -2,7 +2,9 @@
 
 set -xe
 
-for p in */; do
+DIR="$(dirname "$(readlink -f "$0")")"
+
+for p in "${DIR}"/*; do
     if [ ! -f "${p}/build.bash" ]; then
         echo "No build.bash in ${p} !"
         exit 1
