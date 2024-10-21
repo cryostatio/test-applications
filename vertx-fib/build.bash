@@ -11,7 +11,7 @@ BUILD_TAG="${APP_VERSION:-$(sh "${DIR}/gradlew" -p "${DIR}" -q printVersion)}"
 
 podman manifest create "${BUILD_IMG}:${BUILD_TAG}"
 
-for arch in amd64 arm64; do
+for arch in ${ARCHS:-amd64 arm64}; do
     echo "Building for ${arch} ..."
     JIB_ARCH="${arch}" sh "${DIR}/gradlew" -p "${DIR}" jibDockerBuild
     podman manifest add "${BUILD_IMG}:${BUILD_TAG}" containers-storage:"${BUILD_IMG}:linux-${arch}"
