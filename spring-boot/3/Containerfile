@@ -1,0 +1,13 @@
+ARG agent_version
+FROM quay.io/cryostat/cryostat-agent-init:${agent_version} AS agent
+
+FROM registry.access.redhat.com/ubi8/openjdk-17:latest
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
+EXPOSE 10010 9097
+USER 185
+ENV AB_JOLOKIA_OFF=""
+ENV JAVA_OPTS_APPEND="-Dcom.sun.management.jmxremote.port=7000 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -javaagent:/opt/cryostat/cryostat-agent.jar"
+ENV JAVA_APP_JAR="/deployments/spring-boot.jar"
+
+COPY --from=agent /cryostat/agent/cryostat-agent-shaded.jar /opt/cryostat/cryostat-agent.jar
+COPY --chown=185 build/libs/spring-3-cryostat-agent-*-SNAPSHOT.jar /deployments/spring-boot.jar
