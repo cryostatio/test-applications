@@ -13,7 +13,7 @@ trap cleanup EXIT
 
 BUILD_IMG="${APP_REGISTRY:-quay.io}/${APP_NAMESPACE:-redhat-java-monitoring}/${APP_NAME:-wildfly-23-cryostat-agent}"
 BUILD_TAG="${APP_VERSION:-latest}"
-CRYOSTAT_AGENT_VERSION="${CRYOSTAT_AGENT_VERSION:-0.5.0-SNAPSHOT}"
+CRYOSTAT_AGENT_VERSION="${CRYOSTAT_AGENT_VERSION:-0.6.0-SNAPSHOT}"
 IFS=', ' read -r -a ARCHS <<< "${IMAGE_ARCHS:-amd64 arm64}"
 
 podman manifest create "${BUILD_IMG}:${BUILD_TAG}"
