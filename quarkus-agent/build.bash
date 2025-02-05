@@ -19,7 +19,7 @@ podman manifest create "${BUILD_IMG}:${BUILD_TAG}"
 
 for arch in ${ARCHS:-amd64 arm64}; do
     echo "Building for ${arch} ..."
-    podman build --platform="linux/${arch}" -t "${BUILD_IMG}:linux-${arch}" -f "${DIR}/src/main/docker/Dockerfile.jvm" "${DIR}"
+    podman build --pull=missing --platform="linux/${arch}" -t "${BUILD_IMG}:linux-${arch}" -f "${DIR}/src/main/docker/Dockerfile.jvm" "${DIR}"
     podman manifest add "${BUILD_IMG}:${BUILD_TAG}" containers-storage:"${BUILD_IMG}:linux-${arch}"
 done
 
