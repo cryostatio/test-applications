@@ -1,0 +1,13 @@
+FROM registry.access.redhat.com/ubi9/openjdk-21:latest AS build
+USER root
+RUN microdnf install -y tar gzip git
+RUN curl -sL https://github.com/clojure/brew-install/releases/latest/download/linux-install.sh | bash -
+WORKDIR /root
+COPY . .
+RUN clojure -Sforce -T:build all
+
+FROM registry.access.redhat.com/ubi9/openjdk-21-runtime:latest
+COPY --from=build /root/target/guestbook-standalone.jar /deployments/guestbook.jar
+ENV JAVA_APP_JAR="/deployments/guestbook.jar"
+ENV JDBC_URL=jdbc:sqlite:/tmp/guestbook.db
+EXPOSE 3000
