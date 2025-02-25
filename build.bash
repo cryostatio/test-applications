@@ -2,10 +2,7 @@
 
 set -xe
 
-for p in */; do
-    if [ ! -f "${p}/build.bash" ]; then
-        echo "No build.bash in ${p} !"
-        exit 1
-    fi
-    PUSH_MANIFEST="${PUSH_MANIFEST:-false}" TAGS="$(echo "${TAGS:-latest}" | tr '[:upper:]' '[:lower:]')" bash "${p}/build.bash"
+files="$(find . -mindepth 2 -type f -name build.bash)"
+for p in ${files}; do
+    PUSH_MANIFEST="${PUSH_MANIFEST:-false}" TAGS="$(echo "${TAGS:-latest}" | tr '[:upper:]' '[:lower:]')" bash "${p}"
 done
