@@ -1,4 +1,4 @@
-name: Build Container Image
+name: Build Container Images
 
 concurrency:
   group: ci-${{ github.run_id }}
@@ -26,7 +26,7 @@ jobs:
   get-agent-version:
     runs-on: ubuntu-latest
     if: ${{ github.repository_owner == 'cryostatio' }}
-    outputs: 
+    outputs:
       image-version: ${{ steps.get-agent-version.outputs.agent-version }}
     steps:
     - uses: actions/checkout@v4
@@ -39,15 +39,30 @@ jobs:
       run: |
         echo "agent-version=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)" >> $GITHUB_OUTPUT
 
+  get-samples:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'cryostatio' }}
+    outputs:
+      paths: ${{ steps.get-paths.outputs.paths }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref }}
+        submodules: true
+        fetch-depth: 0
+    - id: get-paths
+      run: |
+        paths=$(find . -mindepth 2 -type f -name build.bash | awk '{print "\x27" $1 "\x27"}' | head -c -1 | tr '\n' ',')
+        echo "paths=[${paths}]" >> "$GITHUB_OUTPUT"
+
   build-and-push:
-    needs: [get-agent-version]
+    needs: [get-agent-version, get-samples]
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java: ['17']
+        path: ${{ fromJSON(needs.get-samples.outputs.paths) }}
     env:
       agent-version: ${{ needs.get-agent-version.outputs.image-version }}
-    name: Build Java ${{ matrix.java }}
     steps:
     - uses: actions/checkout@v4
       with:
@@ -59,14 +74,14 @@ jobs:
         sudo apt-get install -y qemu-user-static
     - uses: actions/setup-java@v4
       with:
-        java-version: ${{ matrix.java }}
+        java-version: 17
         distribution: 'temurin'
     - name: Get date tag
       run: echo "DATE_TAG=$(date -uI)" >> "$GITHUB_ENV"
     - name: Registry login
       run: podman login quay.io --username=${{ env.CI_USER }} --password=${{ secrets.REPOSITORY_TOKEN }}
     - name: Build application
-      run: ./build.bash
+      run: bash ${{ matrix.path }}
       env:
         TAGS: ${{ env.agent-version }} ${{env.DATE_TAG}} latest
         PUSH_MANIFEST: true
