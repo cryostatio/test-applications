@@ -75,7 +75,7 @@
 #   accessed directly. (example: "foo.example.com,bar.example.com")
 #
 ###
-FROM quay.io/lib/ibm-semeru-runtimes:open-17-jre
+FROM quay.io/lib/ibm-semeru-runtimes:open-17.0.15_6-jdk
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 ENV CRYOSTAT_AGENT=cryostat-agent-shaded.jar
