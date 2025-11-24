@@ -79,11 +79,12 @@ FROM registry.access.redhat.com/ubi8/openjdk-17:latest
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 ENV CRYOSTAT_AGENT=cryostat-agent-shaded.jar
+ENV JMC_AGENT=jmc-agent.jar
 
 EXPOSE 10010 9097
 USER 185
 ENV AB_JOLOKIA_OFF=""
-ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dcom.sun.management.jmxremote.port=9097 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -javaagent:/deployments/app/cryostat-agent.jar"
+ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager -Dcom.sun.management.jmxremote.port=9097 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false -javaagent:/deployments/app/cryostat-agent.jar -javaagent:/deployments/app/$JMC_AGENT"
 ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
@@ -93,4 +94,5 @@ COPY --chown=185 target/quarkus-app/app/ /deployments/app/
 COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
 
 COPY --chown=185 target/dependency/$CRYOSTAT_AGENT /deployments/app/cryostat-agent.jar
+COPY --chown=185 target/dependency/$JMC_AGENT /deployments/app/$JMC_AGENT
 # COPY --chown=185 target/quarkus-app/lib/main/io.cryostat.cryostat-agent-*.jar /deployments/app/$CRYOSTAT_AGENT
