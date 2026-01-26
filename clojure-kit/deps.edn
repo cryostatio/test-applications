@@ -55,7 +55,7 @@
                                 expound/expound                      {:mvn/version "0.8.9"}
                                 integrant/repl                       {:mvn/version "0.3.2"}
                                 io.github.cognitect-labs/test-runner {:git/tag "v0.5.0"
-                                                                      :git/sha "b3fd0d2"}
+                                                                      :git/sha "48c3c67f98362ba1e20526db4eeb6996209c050a"}
                                 pjstadig/humane-test-output          {:mvn/version "0.11.0"}
                                 ring/ring-devel                      {:mvn/version "1.9.3"}
                                 ring/ring-mock                       {:mvn/version "0.4.0"}
