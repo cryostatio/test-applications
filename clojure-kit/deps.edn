@@ -17,7 +17,7 @@
            metosin/muuntaja {:mvn/version "0.6.8"}
 
            ;; kit Libs
-           io.github.kit-clj/kit-core {:mvn/version "1.0.0"}
+           io.github.kit-clj/kit-core {:mvn/version "1.0.9"}
            io.github.kit-clj/kit-undertow {:mvn/version "1.0.0"}
            io.github.kit-clj/kit-repl {:mvn/version "1.0.0"}
            selmer/selmer {:mvn/version "1.12.49"}
