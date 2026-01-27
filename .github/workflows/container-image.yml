@@ -80,6 +80,9 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get install -y qemu-user-static
+    - name: Install perl shasum
+      run: |
+        sudo apt-get install -y perl
     - uses: actions/setup-java@v4
       with:
         java-version: 17
