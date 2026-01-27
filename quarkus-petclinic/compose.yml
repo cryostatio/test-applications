@@ -13,7 +13,7 @@ services:
         condition: service_healthy
 
   quarkus-petclinic-db:
-    image: "postgres:14"
+    image: "postgres:18"
     mem_limit: 128m
     environment:
       - POSTGRES_USER=developer
