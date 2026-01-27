@@ -1,0 +1,80 @@
+name: Pull Request CI
+
+on:
+  pull_request_target:
+
+env:
+  OPENSUSE_UNOFFICIAL_LIBCONTAINERS_KEY_URL: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_22.04/Release.key"
+  OPENSUSE_UNOFFICIAL_LIBCONTAINERS_SOURCE_URL: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_22.04"
+  CI_USER: redhat-java-monitoring+github_ci
+  CI_REGISTRY: quay.io
+  CI_NAMESPACE: redhat-java-monitoring
+
+jobs:
+  get-agent-version:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'cryostatio' }}
+    outputs:
+      image-version: ${{ steps.get-agent-version.outputs.agent-version }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        repository: ${{ github.repository_owner }}/cryostat-agent
+        ref: ${{ github.ref }}
+        submodules: true
+        fetch-depth: 0
+    - id: get-agent-version
+      run: |
+        echo "agent-version=$(mvn -q -DforceStdout help:evaluate -Dexpression=project.version)" >> $GITHUB_OUTPUT
+
+  get-samples:
+    runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'cryostatio' }}
+    outputs:
+      paths: ${{ steps.get-paths.outputs.paths }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        ref: ${{ github.ref }}
+        submodules: true
+        fetch-depth: 0
+    - id: get-paths
+      run: |
+        paths=$(find . -mindepth 2 -type f -name build.bash | awk '{print "\x27" $1 "\x27"}' | head -c -1 | tr '\n' ',')
+        echo "paths=[${paths}]" >> "$GITHUB_OUTPUT"
+
+  build-and-push:
+    needs: [get-agent-version, get-samples]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        path: ${{ fromJSON(needs.get-samples.outputs.paths) }}
+    env:
+      agent-version: ${{ needs.get-agent-version.outputs.image-version }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: true
+        fetch-depth: 0
+    - uses: DamianReeves/write-file-action@v1.3
+      with:
+        path: $HOME/.config/containers/registries.conf.d/999-block-docker-io.conf
+        write-mode: overwrite
+        contents: |
+          [[registry]]
+          location = "docker.io"
+          blocked = true
+    - uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: 'temurin'
+    - name: Build application
+      run: bash ${{ matrix.path }}
+      env:
+        TAGS: latest
+        ARCHS: amd64
+        PUSH_MANIFEST: false
+        APP_REGISTRY: ${{ env.CI_REGISTRY }}
+        APP_NAMESPACE: ${{ env.CI_NAMESPACE }}
+        BUILD_TAG: ${{ env.agent-version }}
+        CRYOSTAT_AGENT_VERSION: ${{ env.agent-version }}
