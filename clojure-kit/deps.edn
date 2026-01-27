@@ -19,7 +19,7 @@
            ;; kit Libs
            io.github.kit-clj/kit-core {:mvn/version "1.0.0"}
            io.github.kit-clj/kit-undertow {:mvn/version "1.0.0"}
-           io.github.kit-clj/kit-repl {:mvn/version "1.0.0"}
+           io.github.kit-clj/kit-repl {:mvn/version "1.0.3"}
            selmer/selmer {:mvn/version "1.12.49"}
            luminus/ring-ttl-session {:mvn/version "0.3.3"}
            io.github.kit-clj/kit-sql {:mvn/version "1.0.0"}
