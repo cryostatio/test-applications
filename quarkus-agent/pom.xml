@@ -18,7 +18,7 @@
     <jmc.version>9.1.1</jmc.version>
     <jmc-agent.version>1.0.1</jmc-agent.version>
     <surefire-plugin.version>3.2.3</surefire-plugin.version>
-    <dependency-plugin.version>3.3.0</dependency-plugin.version>
+    <dependency-plugin.version>3.9.0</dependency-plugin.version>
     <download-maven-plugin.version>2.0.0</download-maven-plugin.version>
     <io.cryostat.agent.version>PLACEHOLDER</io.cryostat.agent.version>
   </properties>
