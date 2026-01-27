@@ -14,7 +14,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'io.vertx:vertx-web:4.5.8'
+    implementation 'io.vertx:vertx-web:4.5.24'
     javaagent "io.cryostat:cryostat-agent:${System.getenv('CRYOSTAT_AGENT_VERSION')}:shaded"
 }
 
