@@ -2,7 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'com.google.cloud.tools.jib' version '3.4.2'
-    id 'com.ryandens.javaagent-jib' version '0.6.1'
+    id 'com.ryandens.javaagent-jib' version '0.10.0'
 }
 
 repositories {
