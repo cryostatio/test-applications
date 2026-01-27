@@ -18,7 +18,7 @@ jobs:
     outputs:
       image-version: ${{ steps.get-agent-version.outputs.agent-version }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         repository: ${{ github.repository_owner }}/cryostat-agent
     - id: get-agent-version
@@ -31,7 +31,7 @@ jobs:
     outputs:
       paths: ${{ steps.get-paths.outputs.paths }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         ref: ${{ github.ref }}
         submodules: true
@@ -50,7 +50,7 @@ jobs:
     env:
       agent-version: ${{ needs.get-agent-version.outputs.image-version }}
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
       with:
         submodules: true
         fetch-depth: 0
