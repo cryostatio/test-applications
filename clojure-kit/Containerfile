@@ -1,6 +1,6 @@
 FROM registry.access.redhat.com/ubi9/openjdk-21:latest AS build
 USER root
-RUN microdnf install -y tar gzip git
+RUN microdnf install -y tar gzip git perl-Digest-SHA
 RUN curl -sL https://github.com/clojure/brew-install/releases/latest/download/linux-install.sh | bash -
 WORKDIR /root
 COPY . .
