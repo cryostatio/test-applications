@@ -47,7 +47,7 @@
                                 pjstadig/humane-test-output     {:mvn/version "0.11.0"}
                                 ring/ring-devel                 {:mvn/version "1.9.3"}
                                 ring/ring-mock                  {:mvn/version "0.4.0"}
-                                io.github.kit-clj/kit-generator {:mvn/version "0.1.0"}}
+                                io.github.kit-clj/kit-generator {:mvn/version "0.2.7"}}
                   :extra-paths ["env/dev/clj" "env/dev/resources" "test/clj"]
                   :main-opts   ["-e" "(require 'pjstadig.humane-test-output) (pjstadig.humane-test-output/activate!)" "-r"]}
 
@@ -59,7 +59,7 @@
                                 pjstadig/humane-test-output          {:mvn/version "0.11.0"}
                                 ring/ring-devel                      {:mvn/version "1.9.3"}
                                 ring/ring-mock                       {:mvn/version "0.4.0"}
-                                io.github.kit-clj/kit-generator      {:mvn/version "0.1.0"}
+                                io.github.kit-clj/kit-generator      {:mvn/version "0.2.7"}
                                 com.lambdaisland/classpath           {:mvn/version "0.6.58"}}
                   :exect-fn    cognitect.test-runner.api/test
                   :extra-paths ["env/dev/clj" "env/dev/resources" "env/test/resources" "test/clj"]
