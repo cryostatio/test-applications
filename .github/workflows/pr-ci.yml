@@ -1,7 +1,9 @@
 name: Pull Request CI
 
 on:
+  pull_request:
   pull_request_target:
+  merge_group:
 
 env:
   OPENSUSE_UNOFFICIAL_LIBCONTAINERS_KEY_URL: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_22.04/Release.key"
