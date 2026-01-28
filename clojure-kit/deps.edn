@@ -23,7 +23,7 @@
            selmer/selmer {:mvn/version "1.12.70"}
            luminus/ring-ttl-session {:mvn/version "0.3.3"}
            io.github.kit-clj/kit-sql {:mvn/version "1.0.0"}
-           org.xerial/sqlite-jdbc {:mvn/version "3.34.0"}}
+           org.xerial/sqlite-jdbc {:mvn/version "3.51.1.0"}}
  :aliases {:uberjar {:replace-deps {com.github.seancorfield/depstar {:mvn/version "2.1.267"}}
                      :exec-fn      hf.depstar/uberjar
                      :exec-args    {:aot        true
