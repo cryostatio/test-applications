@@ -20,7 +20,7 @@
            io.github.kit-clj/kit-core {:mvn/version "1.0.9"}
            io.github.kit-clj/kit-undertow {:mvn/version "1.0.0"}
            io.github.kit-clj/kit-repl {:mvn/version "1.0.3"}
-           selmer/selmer {:mvn/version "1.12.70"}
+           selmer/selmer {:mvn/version "1.13.0"}
            luminus/ring-ttl-session {:mvn/version "0.3.3"}
            io.github.kit-clj/kit-sql {:mvn/version "1.1.4"}
            org.xerial/sqlite-jdbc {:mvn/version "3.51.1.0"}}
