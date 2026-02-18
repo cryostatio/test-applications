@@ -91,6 +91,7 @@ jobs:
     - name: Build application
       run: bash ${{ matrix.path }}
       env:
+        GH_TOKEN: ${{ github.token }}
         TAGS: ${{ env.agent-version }} ${{env.DATE_TAG}} latest
         PUSH_MANIFEST: true
         APP_REGISTRY: ${{ env.CI_REGISTRY }}
