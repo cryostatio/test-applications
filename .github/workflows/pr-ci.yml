@@ -45,6 +45,8 @@ jobs:
     needs: [get-agent-version, get-samples]
     runs-on: ubuntu-latest
     strategy:
+      continue-on-error: true
+      fail-fast: false
       matrix:
         path: ${{ fromJSON(needs.get-samples.outputs.paths) }}
     env:
