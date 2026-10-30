@@ -33,7 +33,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
       with:
-        ref: ${{ github.ref }}
+        ref: ${{ github.event.pull_request.head.sha }}
         submodules: true
         fetch-depth: 0
     - id: get-paths
@@ -54,6 +54,7 @@ jobs:
     steps:
     - uses: actions/checkout@v6
       with:
+        ref: ${{ github.event.pull_request.head.sha }}
         submodules: true
         fetch-depth: 0
     - uses: DamianReeves/write-file-action@v1.3
