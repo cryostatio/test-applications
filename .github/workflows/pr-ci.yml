@@ -1,8 +1,11 @@
 name: Pull Request CI
 
 on:
-  pull_request_target:
+  pull_request:
   merge_group:
+
+permissions:
+  contents: read
 
 env:
   OPENSUSE_UNOFFICIAL_LIBCONTAINERS_KEY_URL: "https://download.opensuse.org/repositories/devel:/kubic:/libcontainers:/unstable/xUbuntu_22.04/Release.key"
@@ -33,7 +36,6 @@ jobs:
     steps:
     - uses: actions/checkout@v6
       with:
-        ref: ${{ github.event.pull_request.head.sha }}
         submodules: true
         fetch-depth: 0
     - id: get-paths
@@ -54,7 +56,6 @@ jobs:
     steps:
     - uses: actions/checkout@v6
       with:
-        ref: ${{ github.event.pull_request.head.sha }}
         submodules: true
         fetch-depth: 0
     - uses: DamianReeves/write-file-action@v1.3
