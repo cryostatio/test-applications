@@ -44,8 +44,8 @@ jobs:
   build-and-push:
     needs: [get-agent-version, get-samples]
     runs-on: ubuntu-latest
+    continue-on-error: true
     strategy:
-      continue-on-error: true
       fail-fast: false
       matrix:
         path: ${{ fromJSON(needs.get-samples.outputs.paths) }}
