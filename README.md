@@ -26,29 +26,3 @@ comes from `AGENT_INIT_IMG` (default
 injection. CI sets `CRYOSTAT_AGENT_VERSION`, which selects the matching init-image
 tag (lowercased to match the published tags). `AGENT_INIT_IMG` overrides the
 complete init-image reference.
-
-Both scripts use Podman, build AMD64 and ARM64 images by default, and only publish
-when `PUSH_MANIFEST=true`. They follow the existing CI interface: `APP_REGISTRY`,
-`APP_NAMESPACE`, `APP_NAME`, `BUILD_TAG`, `TAGS`, and `ARCHS`. `APP_VERSION`
-overrides `BUILD_TAG`; `APP_IMAGE` overrides the complete tagged image reference.
-PR CI builds AMD64 without publishing; the publishing workflow automatically
-discovers both scripts and publishes version, date, and `latest` tags under
-`redhat-java-monitoring`.
-
-Build locally without publishing:
-
-```sh
-ARCHS=amd64 APP_IMAGE=localhost/scorecard-app:test bash scorecard/build.bash
-ARCHS=amd64 APP_IMAGE=localhost/scorecard-agent-app:test bash scorecard-agent/build.bash
-```
-
-From a Cryostat Operator checkout, build these images and serve them through its
-local Kind registry without publishing to Quay:
-
-```sh
-SCORECARD_APPLICATIONS_DIR=/path/to/test-applications \
-OPERATOR_IMG=quay.io/cryostat/cryostat-operator:latest \
-CORE_IMG=quay.io/cryostat/cryostat:latest \
-SCORECARD_TEST_SELECTION=cryostat-agent,cryostat-agent-autoconfig \
-make test-scorecard-local-kind
-```
